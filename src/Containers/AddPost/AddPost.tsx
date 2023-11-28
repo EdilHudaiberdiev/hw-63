@@ -48,7 +48,7 @@ const AddPost = () => {
           value={post.title}
           onChange={changeForm}
         />
-        <label htmlFor="message">Description</label>
+        <label htmlFor="description">Description</label>
         <textarea
           name="description"
           id="description"
