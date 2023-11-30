@@ -1,17 +1,47 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
 import axiosApi from '../../axiosApi';
-import {useNavigate} from 'react-router-dom';
 import Spinner from '../../Components/UI/Spinner/Spinner';
 import {IPostSend} from '../../types';
 
-const AddPost = () => {
-  const Navigation = useNavigate();
+
+
+const EditPostPage = () => {
   const [loading, setLoading] = useState(false);
+  const params = useParams();
+  const Navigation = useNavigate();
   const [post, setPost] = useState<IPostSend>({
     title: '',
     description: '',
     date: new Date()
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+
+      try {
+        const response = await axiosApi.get(`/posts/${params.id}.json`);
+        const post = response.data;
+
+        if (response.data !== null) {
+          setPost({
+            ...post,
+            title: post.title,
+            description: post.description
+          });
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (params.id) {
+      fetchData().catch(e => console.error(e));
+    }
+
+  }, [params.id]);
+
 
   const changeForm = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setPost((prev) => ({
@@ -20,12 +50,13 @@ const AddPost = () => {
     }));
   };
 
+
   const onFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true)
 
     try {
-      await axiosApi.post('posts.json', post);
+      await axiosApi.put(`/posts/${params.id}.json`, post);
     } finally {
       setLoading(false);
       Navigation('/');
@@ -34,9 +65,9 @@ const AddPost = () => {
 
   return (
     <>
-      {loading ? <Spinner/> :
+      {loading ? <Spinner/>  :
         <form onSubmit={onFormSubmit}>
-          <h2 className="text-center mb-4">Add new post</h2>
+          <h2 className="text-center mb-4">Edit post</h2>
           <div className="mb-3 w-75 mx-auto">
             <label htmlFor="title" className="form-label">Title</label>
             <input
@@ -60,7 +91,7 @@ const AddPost = () => {
             ></textarea>
           </div>
           <div className="text-center">
-            <button type="submit" className="btn btn-primary">Send</button>
+            <button type="submit" className="btn btn-primary">Edit</button>
           </div>
         </form>
       }
@@ -68,4 +99,4 @@ const AddPost = () => {
   );
 };
 
-export default AddPost;
+export default EditPostPage;

@@ -8,11 +8,13 @@ interface Props {
 
 const PostsShortItem: React.FC<Props> = ({post}) => {
   return (
-    <>
-     <p>{post.date}</p>
-     <p>{post.title}</p>
-      <NavLink to={`/posts/${post.id}`}> Read more</NavLink>
-    </>
+    <div className="card mb-3 w-50">
+      <div className="card-body">
+        <h4 className="card-title">{post.title}</h4>
+        <p className="card-text">{post.date}</p>
+        <NavLink className="btn btn-primary" to={`/posts/${post.id}`}>Read more</NavLink>
+      </div>
+    </div>
   );
 };
 

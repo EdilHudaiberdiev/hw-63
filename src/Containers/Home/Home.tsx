@@ -1,7 +1,10 @@
 import {useEffect, useState} from 'react';
+import Spinner from '../../Components/UI/Spinner/Spinner';
 import {IPost} from '../../types';
 import axiosApi from '../../axiosApi';
 import PostsShortItem from '../../Components/PostsShortItem/PostsShortItem';
+// import dayjs from "dayjs";
+import dayjs from "dayjs";
 
 const Home = () => {
   const [posts, setPosts] = useState<IPost[]>([]);
@@ -22,7 +25,7 @@ const Home = () => {
               id: key,
               title: value.title,
               description: value.description,
-              date: value.date,
+              date: dayjs(value.date).format('DD/MM/YYYY h:mm A'),
             });
           }
 
@@ -36,13 +39,21 @@ const Home = () => {
     fetchData().catch(e => console.error(e));
   }, []);
 
-  console.log(posts);
-
   return (
     <>
-      {posts.map(post => (
-        <PostsShortItem post={post} key={post.id}/>
-      ))}
+      {loading ? <Spinner/> :
+        <>
+          {posts.length > 0 ?
+            <>
+              {posts.map(post => (
+                <PostsShortItem post={post} key={post.id}/>
+              ))}
+            </>
+            :
+            <h4>No posts yet</h4>
+          }
+        </>
+      }
     </>
   );
 };

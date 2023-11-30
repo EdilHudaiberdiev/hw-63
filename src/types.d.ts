@@ -5,3 +5,8 @@ export interface IPost {
   date: string;
 }
 
+export interface IPostSend {
+  title: string,
+  description: string,
+  date: Date,
+}
